@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Sign Up</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
+    body {background:#f7faff; display:flex; align-items:center; justify-content:center; height:100vh;}
+    .login-container {background:#fff; padding:2rem; border-radius:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.08); width:100%; max-width:400px; text-align:center;}
+    .logo {width: 180px;height:180px;margin-bottom:1rem;object-fit:contain;}
+    h2 {margin-bottom:1rem; font-weight:600;color:#1e3a8a;}
+    .input-group {margin-bottom:1rem; text-align:left;}
+    .input-group label {font-size:0.9rem; color:#333;margin-bottom:0.4rem;display:block;}
+    .input-group input {width:100%; padding:0.7rem; border:1px solid #cbd5e1; border-radius:0.5rem; font-size:1rem; transition:border 0.2s;}
+    .input-group input:focus {border-color:#3b82f6; outline:none;}
+    .btn {background:#3b82f6; color:white; border:none; padding:0.75rem; width:100%; border-radius:0.5rem; font-size:1rem; cursor:pointer; margin-top:0.5rem; transition:0.2s;}
+    .btn:hover {background:#2563eb;}
+    .extra-links {margin-top:1rem; font-size:0.9rem;}
+    .extra-links a {color:#3b82f6; text-decoration:none; cursor:pointer;}
+    .extra-links a:hover {text-decoration:underline;}
+    .hidden {display:none;}
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="/logo.png" alt="Logo" class="logo"/>
+    
+    <!-- Login Section -->
+    <div id="loginSection">
+      <h2>Welcome Back</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required />
+        </div>
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required />
+        </div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+      <div class="extra-links">
+        <p><a id="showSignUp">Don’t have an account? Sign Up</a></p>
+      </div>
+    </div>
+
+    <!-- Sign Up Section -->
+    <div id="signUpSection" class="hidden">
+      <h2>Create Account</h2>
+      <form id="signUpForm">
+        <div class="input-group">
+          <label for="signUpEmail">Email</label>
+          <input type="email" id="signUpEmail" required />
+        </div>
+        <div class="input-group">
+          <label for="signUpPassword">Password</label>
+          <input type="password" id="signUpPassword" required />
+        </div>
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+      <div class="extra-links">
+        <p><a id="showLogin">Already have an account? Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login / Sign Up Script -->
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+
+    const loginForm = document.getElementById("loginForm");
+    const signUpForm = document.getElementById("signUpForm");
+    const loginSection = document.getElementById("loginSection");
+    const signUpSection = document.getElementById("signUpSection");
+    const showSignUp = document.getElementById("showSignUp");
+    const showLogin = document.getElementById("showLogin");
+
+    // Toggle sections
+    showSignUp.addEventListener("click", () => {
+      loginSection.classList.add("hidden");
+      signUpSection.classList.remove("hidden");
+    });
+    showLogin.addEventListener("click", () => {
+      signUpSection.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+    });
+
+    // Login
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful! Welcome " + userCredential.user.email);
+        window.location.href = "home.html";
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    });
+
+    // Sign Up
+    signUpForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signUpEmail").value;
+      const password = document.getElementById("signUpPassword").value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        alert("Account created! Welcome " + userCredential.user.email);
+        window.location.href = "home.html";
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

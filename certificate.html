@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Certificate Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      max-width: 1000px;
+      width: 100%;
+    }
+    .controls {
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .controls input, .controls button {
+      padding: 12px 20px;
+      font-size: 16px;
+      margin: 8px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+    .controls input {
+      width: 300px;
+      max-width: 100%;
+    }
+    .controls input:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    }
+    .controls button {
+      background: linear-gradient(135deg, #4a90e2 0%, #2a5cb0 100%);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .controls button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .certificate {
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 12px solid transparent;
+      border-image: linear-gradient(135deg, #4a90e2, #2a5cb0);
+      border-image-slice: 1;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+      margin: 0 auto;
+    }
+    .certificate::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      bottom: 20px;
+      left: 20px;
+      border: 2px solid #4a90e2;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .header img {
+      height: 70px;
+      width: auto;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #2a5cb0;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: bold;
+      margin: 30px 0 15px;
+      color: #2a5cb0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .subtitle {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+    .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #2a5cb0;
+      margin: 30px 0;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(42, 92, 176, 0.1) 100%);
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .desc {
+      font-size: 18px;
+      color: #444;
+      max-width: 70%;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .footer {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 16px;
+      color: #2a5cb0;
+      font-weight: 600;
+    }
+    .decoration {
+      position: absolute;
+      opacity: 0.1;
+      z-index: 0;
+    }
+    .decoration.tl {
+      top: 40px;
+      left: 40px;
+      font-size: 80px;
+      transform: rotate(-30deg);
+    }
+    .decoration.tr {
+      top: 40px;
+      right: 40px;
+      font-size: 80px;
+      transform: rotate(30deg);
+    }
+    .decoration.bl {
+      bottom: 40px;
+      left: 40px;
+      font-size: 80px;
+      transform: rotate(30deg);
+    }
+    .decoration.br {
+      bottom: 40px;
+      right: 40px;
+      font-size: 80px;
+      transform: rotate(-30deg);
+    }
+    .date {
+      margin-top: 20px;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="controls">
+      <input id="nameInput" type="text" placeholder="Enter student's name" />
+      <button id="generateBtn">Generate Certificate</button>
+      <button id="downloadBtn" disabled>Download Certificate</button>
+    </div>
+
+    <div id="certificate" class="certificate">
+      <div class="decoration tl">✎</div>
+      <div class="decoration tr">✎</div>
+      <div class="decoration bl">✎</div>
+      <div class="decoration br">✎</div>
+      
+      <div class="header">
+        <img src="logo.png" alt="Keyboard Clicks Logo">
+        <h2>KEYBOARD CLICKS ACADEMY</h2>
+      </div>
+      <div class="title">Certificate of Achievement</div>
+      <div class="subtitle">This certificate is proudly presented to</div>
+      <div id="certName" class="name">STUDENT NAME</div>
+      <div class="desc">
+        for demonstrating exceptional typing skills, dedication, and perseverance in completing the Advanced Typing Mastery Program.
+      </div>
+      <div class="footer">
+        <div>Issued by Keyboard Clicks Academy</div>
+        <div class="date" id="currentDate">January 1, 2023</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const nameInput = document.getElementById("nameInput");
+    const certName = document.getElementById("certName");
+    const generateBtn = document.getElementById("generateBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const certificate = document.getElementById("certificate");
+    const currentDate = document.getElementById("currentDate");
+
+    // Set current date
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    currentDate.textContent = today.toLocaleDateString('en-US', options);
+
+    generateBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      if (!name) {
+        alert("Please enter the student's name first!");
+        return;
+      }
+      certName.textContent = name.toUpperCase();
+      downloadBtn.disabled = false;
+      
+      // Add a subtle animation effect
+      certName.style.opacity = '0';
+      setTimeout(() => {
+        certName.style.transition = 'opacity 0.5s ease';
+        certName.style.opacity = '1';
+      }, 10);
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      // Disable buttons during download
+      generateBtn.disabled = true;
+      downloadBtn.disabled = true;
+      
+      html2canvas(certificate, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false
+      }).then(canvas => {
+        const link = document.createElement("a");
+        const fileName = (certName.textContent || "typing_certificate").replace(/\s+/g, '_');
+        link.download = `${fileName}.png`;
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
+        
+        // Re-enable buttons
+        generateBtn.disabled = false;
+        downloadBtn.disabled = false;
+      }).catch(err => {
+        console.error('Error generating certificate:', err);
+        alert('There was an error generating your certificate. Please try again.');
+        generateBtn.disabled = false;
+        downloadBtn.disabled = false;
+      });
+    });
+
+    // Add Enter key functionality
+    nameInput.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        generateBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>

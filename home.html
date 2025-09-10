@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #f5f9ff; /* bright background */
+    color: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid #dce6f7;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e6eefc;
+}
+
+h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 2.5rem;
+    color: #1d4ed8; /* professional blue */
+    margin-bottom: 10px;
+    text-shadow: 0 0 6px rgba(29, 78, 216, 0.15);
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #334155;
+    margin-bottom: 20px;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #475569;
+}
+
+.screen {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+/* Game Screen */
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background: #f1f5ff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dce6f7;
+}
+
+.info-item {
+    text-align: center;
+}
+
+.info-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1d4ed8;
+}
+
+.typing-box {
+    background: #f9fbff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    min-height: 200px;
+    border: 1px solid #dce6f7;
+}
+
+#paragraph {
+    font-family: 'Roboto Mono', monospace;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.current-char {
+    background-color: rgba(29, 78, 216, 0.15);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.correct {
+    color: #1d4ed8;
+}
+
+.incorrect {
+    color: #ef4444;
+    text-decoration: underline;
+}
+
+#user-input {
+    width: 100%;
+    padding: 15px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 18px;
+    background: #f9fbff;
+    border: 1px solid #dce6f7;
+    color: #1e293b;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 78, 216, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Results Screen */
+.results-container {
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    background: #f9fbff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dce6f7;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1d4ed8;
+    margin: 10px 0;
+}
+
+.progress-container {
+    margin: 30px 0;
+}
+
+.level-progress {
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* Level Selection */
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.level-btn {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background: #f1f5ff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #1e293b;
+}
+
+.level-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(29, 78, 216, 0.3);
+}
+
+.level-btn.completed {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    color: #fff;
+}
+
+.level-btn.current {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    color: white;
+}
+
+.level-btn.locked {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Certificate Button */
+.certificate-btn {
+    background: linear-gradient(90deg, #f97316 0%, #fb923c 100%);
+    margin-top: 20px;
+}
+
+/* Mobile Warning */
+.mobile-warning {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8fafc;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.warning-content {
+    max-width: 500px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #dce6f7;
+}
+
+@media (max-width: 768px) {
+    .mobile-warning {
+        display: flex;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .level-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+</style>
+</head>
+<body>
+    <!-- Mobile Warning -->
+    <div class="mobile-warning">
+        <div class="warning-content">
+            <h2>🚫 Desktop Only</h2>
+            <p>Typing Master Challenge is designed for desktop computers to provide the best typing experience with a physical keyboard.</p>
+            <p>Please visit this site on a desktop or laptop computer to use the application.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <header>
+                <h1>KEYBOARD CLICK CHALLENGE</h1>
+                <p>Test and improve your typing speed through 50 challenging levels</p>
+            </header>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <h2>How to Play</h2>
+                <p>Type the paragraph as quickly and accurately as possible</p>
+                <p>Complete each level to unlock the next one</p>
+                <p>Track your progress and improve your typing speed</p>
+            </div>
+            
+            <div class="controls">
+                <button id="start-btn">Start Typing Challenge</button>
+            </div>
+        </div>
+
+        <!-- Level Selection Screen -->
+        <div id="level-screen" class="screen">
+            <header>
+                <h1>Select Level</h1>
+                <p>Choose a level to practice your typing skills</p>
+            </header>
+            
+            <div class="level-grid" id="level-container">
+                <!-- Level buttons will be generated here -->
+            </div>
+            
+            <div class="controls">
+                <button id="back-to-welcome">Back to Welcome</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <header>
+                <h1>Level <span id="level-number">1</span></h1>
+                <p>Type the text below as quickly and accurately as possible</p>
+            </header>
+            
+            <div class="game-info">
+                <div class="info-item">
+                    <div>Time Remaining</div>
+                    <div class="info-value" id="timer">60</div>
+                </div>
+                <div class="info-item">
+                    <div>WPM</div>
+                    <div class="info-value" id="wpm">0</div>
+                </div>
+                <div class="info-item">
+                    <div>Accuracy</div>
+                    <div class="info-value" id="accuracy">100%</div>
+                </div>
+            </div>
+            
+            <div class="typing-box">
+                <div id="paragraph"></div>
+            </div>
+            
+            <input type="text" id="user-input" placeholder="Click here and start typing..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            
+            <div class="controls">
+                <button id="restart-btn">Restart</button>
+                <button id="submit-btn">Submit</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <header>
+                <h1>Level <span id="result-level">1</span> Complete!</h1>
+                <p>Your typing performance results</p>
+            </header>
+            
+            <div class="results-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>Words Per Minute</div>
+                        <div class="stat-value" id="result-wpm">0</div>
+                        <div>Target: <span id="target-wpm">40</span> WPM</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Accuracy</div>
+                        <div class="stat-value" id="result-accuracy">100%</div>
+                        <div>Target: >95%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Time Taken</div>
+                        <div class="stat-value" id="result-time">0s</div>
+                        <div>Time Remaining: <span id="result-remaining">0s</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Errors</div>
+                        <div class="stat-value" id="result-errors">0</div>
+                        <div>Total Characters: <span id="result-chars">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <h2>Your Progress</h2>
+                    <div class="level-progress">
+                        <div class="progress-bar" id="level-progress-bar" style="width: 2%;"></div>
+                    </div>
+                    <p>Level <span id="current-level">1</span> of 50</p>
+                </div>
+                
+                <div class="controls">
+                    <button id="next-level-btn">Next Level</button>
+                    <button id="select-level-btn">Select Level</button>
+                    <button id="retry-level-btn">Try Again</button>
+                </div>
+                
+                <!-- Certificate Button (only shown after level 50) -->
+                <button id="certificate-btn" class="certificate-btn" style="display: none;">Claim Your Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Desktop check
+        if(/Mobi|Android/i.test(navigator.userAgent)) {
+            document.querySelector('.mobile-warning').style.display = 'flex';
+        }
+
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const levelScreen = document.getElementById('level-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const backToWelcomeBtn = document.getElementById('back-to-welcome');
+        const levelContainer = document.getElementById('level-container');
+        
+        const paragraphElement = document.getElementById('paragraph');
+        const userInput = document.getElementById('user-input');
+        const timerElement = document.getElementById('timer');
+        const wpmElement = document.getElementById('wpm');
+        const accuracyElement = document.getElementById('accuracy');
+        const restartBtn = document.getElementById('restart-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const levelNumber = document.getElementById('level-number');
+        
+        const resultLevel = document.getElementById('result-level');
+        const resultWpm = document.getElementById('result-wpm');
+        const resultAccuracy = document.getElementById('result-accuracy');
+        const resultTime = document.getElementById('result-time');
+        const resultErrors = document.getElementById('result-errors');
+        const resultChars = document.getElementById('result-chars');
+        const resultRemaining = document.getElementById('result-remaining');
+        const levelProgressBar = document.getElementById('level-progress-bar');
+        const currentLevelElement = document.getElementById('current-level');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const selectLevelBtn = document.getElementById('select-level-btn');
+        const retryLevelBtn = document.getElementById('retry-level-btn');
+        const targetWpm = document.getElementById('target-wpm');
+        const certificateBtn = document.getElementById('certificate-btn');
+
+        // Game state
+        let currentLevel = 1;
+        let timer;
+        let timeLeft = 60;
+        let startTime;
+        let originalText = '';
+        let typedText = '';
+        let errors = 0;
+        let timerInterval;
+        let wpmInterval;
+        let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+
+        // Paragraphs for each level (50 levels with increasing difficulty)
+        const levelParagraphs = [
+            // Levels 1-10: Basic sentences with common words
+            "The quick brown fox jumps over the lazy dog. This sentence contains every letter in the English alphabet.",
+            "Programming is the process of creating a set of instructions that tell a computer how to perform a task.",
+            "The atmosphere of Earth is the layer of gases, commonly known as air, retained by Earth's gravity.",
+            "Cryptography is the practice and study of techniques for secure communication in adversarial environments.",
+            "Neuroscience is the scientific study of the nervous system and how it affects behavior and cognition.",
+            "Quantum mechanics is a fundamental theory in physics that describes nature at the smallest scales.",
+            "Artificial intelligence is intelligence demonstrated by machines, unlike natural intelligence.",
+            "Machine learning is the study of computer algorithms that improve automatically through experience.",
+            "The Big Bang theory is the prevailing cosmological model explaining the existence of the universe.",
+            "Black holes are regions of spacetime where gravity is so strong that nothing can escape from them.",
+
+            // Levels 11-20: More complex sentences with technical terms
+            "Bioinformatics is an interdisciplinary field that develops methods for understanding biological data.",
+            "Genomics is an interdisciplinary field focusing on the structure and function of genomes.",
+            "Nanotechnology is the manipulation of matter on an atomic, molecular, and supramolecular scale.",
+            "Plasma is one of the four fundamental states of matter, consisting of a gas of ions and electrons.",
+            "Superconductivity is a set of physical properties observed in certain materials at low temperatures.",
+            "Metamaterials are materials engineered to have properties not found in naturally occurring materials.",
+            "Optogenetics is a biological technique that involves the use of light to control cells in living tissue.",
+            "Crispr is a family of DNA sequences found in the genomes of prokaryotic organisms like bacteria.",
+            "Photosynthesis is the process used by plants to convert light energy into chemical energy.",
+            "Electromagnetism is a branch of physics involving the study of the electromagnetic force.",
+
+            // Levels 21-30: Longer paragraphs with complex concepts
+            "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity. Special relativity applies to all physical phenomena in the absence of gravity.",
+            "Climate change includes both global warming driven by human-induced emissions of greenhouse gases and the resulting large-scale shifts in weather patterns across our planet over extended periods.",
+            "Algorithmic complexity is a measure of the amount of computing resources that an algorithm requires to solve a problem, typically measured in terms of time and space requirements.",
+            "Computational linguistics is an interdisciplinary field concerned with the statistical or rule-based modeling of natural language from a computational perspective using various algorithms.",
+            "Bioengineering applies engineering principles to biological systems for therapeutic or diagnostic purposes, often involving the development of medical devices and artificial organs.",
+            "Astrophysics employs principles of physics and chemistry to ascertain the nature of astronomical objects rather than their positions or motions in space which is more related to astronomy.",
+            "Particle physics studies the nature of particles that constitute matter and radiation, exploring fundamental forces and the smallest detectable building blocks of the universe.",
+            "Geomorphology is the scientific study of the origin and evolution of topographic and bathymetric features created by physical, chemical or biological processes operating at or near Earth's surface.",
+            "Paleoclimatology uses a variety of proxy methods from Earth and life sciences to obtain data previously preserved within rocks, sediments, ice sheets, tree rings, corals, shells and microfossils.",
+            "Thermodynamics is the branch of physics that deals with the relationships between heat and other forms of energy, particularly describing how thermal energy is converted to and from other energy forms.",
+
+            // Levels 31-40: Very complex technical and scientific content
+            "Quantum field theory provides a theoretical framework for constructing quantum mechanical models of subatomic particles in particle physics and quasiparticles in condensed matter physics, representing an advancement beyond classical field theory by incorporating quantum mechanics and special relativity.",
+            "Neuroplasticity refers to the ability of the brain to form and reorganize synaptic connections, especially in response to learning or experience or following injury, demonstrating the dynamic nature of neural pathways throughout an organism's life cycle rather than being fixed after critical periods of development.",
+            "Epigenetics involves the study of heritable phenotype changes that do not involve alterations in the DNA sequence, focusing on mechanisms that activate and deactivate genes without changing the underlying genetic code itself, which can be influenced by various environmental factors and lifestyle choices over time.",
+            "Metagenomics is the study of genetic material recovered directly from environmental samples, enabling researchers to access the functional gene composition of microbial communities and providing insights into the diversity and metabolic potential of microbial communities without the need for culturing individual species.",
+            "Cryoelectron microscopy is a technique for determining high-resolution three-dimensional structures of biological macromolecules in solution that uses electrons rather than light to image specimens, allowing researchers to visualize molecular complexes in near-native states without requiring crystallization.",
+            "Pharmacogenomics examines how an individual's genetic inheritance affects the body's response to drugs, combining pharmacology and genomics to develop effective, safe medications and doses that will be tailored to a person's genetic makeup, potentially revolutionizing drug therapy by maximizing efficacy while minimizing adverse effects.",
+            "Spectrophotometry involves the quantitative measurement of the reflection or transmission properties of a material as a function of wavelength, utilizing instruments that measure the intensity of light at different wavelengths after it has interacted with a sample, providing valuable data for chemical analysis and material characterization.",
+            "Electrophoresis is a technique used in laboratories to separate macromolecules based on size and charge by applying an electric field to move the charged particles through a gel or other matrix, commonly employed for DNA, RNA and protein analysis in various research and diagnostic applications across biological sciences.",
+            "Chromatography encompasses a series of techniques for the separation of mixtures based on differences in the distribution of components between a mobile phase and a stationary phase, allowing for the identification and quantification of individual substances within complex chemical mixtures through various detection methods.",
+            "Mass spectrometry is an analytical technique that ionizes chemical species and sorts the ions based on their mass-to-charge ratio, providing detailed information about the molecular weight, structure, and identity of compounds through the measurement of ion abundance as a function of mass-to-charge ratio.",
+
+            // Levels 41-50: Extremely challenging technical content
+            "The holographic principle posits that the description of a volume of space can be encoded on its boundary, suggesting that the universe may be a holographic projection of physical processes occurring on a distant surface, potentially resolving the black hole information paradox and offering insights into quantum gravity theories that seek to unify general relativity with quantum mechanics.",
+            "Supersymmetry proposes a symmetry between bosons and fermions, suggesting that each particle from one class should have a partner from the other class with similar properties but differing in spin, potentially solving hierarchy problems in particle physics and providing candidates for dark matter, though experimental evidence remains elusive despite extensive searches at particle colliders.",
+            "String theory attempts to reconcile quantum mechanics and general relativity by modeling fundamental particles as one-dimensional vibrating strings rather than point particles, potentially providing a unified description of gravity and particle physics within a framework that naturally incorporates supersymmetry and extra spatial dimensions beyond the familiar three.",
+            "Quantum decoherence explains the transition from quantum to classical behavior through interaction with the environment, addressing the measurement problem by demonstrating how quantum superpositions become effectively irrecoverable due to entanglement with countless environmental degrees of freedom, though interpretations regarding the role of consciousness remain controversial among physicists.",
+            "The anthropic principle suggests that the observable universe must be compatible with the conscious life that observes it, offering an explanation for the apparent fine-tuning of physical constants that if slightly different would not permit the existence of life, though critics argue it represents a tautological explanation rather than a testable scientific hypothesis.",
+            "Catastrophism in geology proposes that Earth's history has been shaped by sudden, short-lived, violent events possibly global in scope, contrasting with uniformitarianism which emphasizes gradual change over long periods, with modern synthesis recognizing elements of both in explaining planetary evolution through various mechanisms across different temporal scales.",
+            "The Gaia hypothesis posits that living organisms interact with their inorganic surroundings on Earth to form a synergistic self-regulating system that helps maintain and perpetuate conditions for life, suggesting the planet functions as a single organism though this interpretation remains controversial with critics arguing it verges on teleology rather than testable science.",
+            "The many-worlds interpretation of quantum mechanics proposes that all possible outcomes of quantum measurements are physically realized in some world or universe, implying a vast multiverse of parallel realities branching from each quantum event, though this remains untestable and philosophically contentious despite resolving the measurement problem without collapse postulates.",
+            "The simulation hypothesis proposes that reality could be a simulated construct, potentially created by an advanced civilization, with some philosophers and physicists arguing we cannot disprove the possibility while others criticize it as pseudoscientific speculation that fails to make testable predictions or provide explanatory power beyond conventional physical models.",
+            "Integrated information theory attempts to explain consciousness by quantifying the causal power of a system over itself, proposing that consciousness corresponds to the capacity of a system to integrate information with phi (Φ) as a measure of this integration, though critics question its testability and whether it adequately addresses the hard problem of consciousness."
+        ];
+
+        // Level configurations
+        const levelConfigs = [
+            { time: 60, targetWpm: 20 },   // Level 1
+            { time: 60, targetWpm: 25 },   // Level 2
+            { time: 60, targetWpm: 30 },   // Level 3
+            { time: 60, targetWpm: 35 },   // Level 4
+            { time: 60, targetWpm: 40 },   // Level 5
+            { time: 55, targetWpm: 45 },   // Level 6
+            { time: 55, targetWpm: 50 },   // Level 7
+            { time: 55, targetWpm: 55 },   // Level 8
+            { time: 50, targetWpm: 60 },   // Level 9
+            { time: 50, targetWpm: 65 },   // Level 10
+            { time: 50, targetWpm: 70 },   // Level 11
+            { time: 45, targetWpm: 75 },   // Level 12
+            { time: 45, targetWpm: 80 },   // Level 13
+            { time: 45, targetWpm: 85 },   // Level 14
+            { time: 40, targetWpm: 90 },   // Level 15
+            { time: 40, targetWpm: 95 },   // Level 16
+            { time: 40, targetWpm: 100 },  // Level 17
+            { time: 35, targetWpm: 105 },  // Level 18
+            { time: 35, targetWpm: 110 },  // Level 19
+            { time: 30, targetWpm: 115 },  // Level 20
+            { time: 30, targetWpm: 120 },  // Level 21
+            { time: 30, targetWpm: 125 },  // Level 22
+            { time: 25, targetWpm: 130 },  // Level 23
+            { time: 25, targetWpm: 135 },  // Level 24
+            { time: 25, targetWpm: 140 },  // Level 25
+            { time: 20, targetWpm: 145 },  // Level 26
+            { time: 20, targetWpm: 150 },  // Level 27
+            { time: 20, targetWpm: 155 },  // Level 28
+            { time: 15, targetWpm: 160 },  // Level 29
+            { time: 15, targetWpm: 165 },  // Level 30
+            { time: 15, targetWpm: 170 },  // Level 31
+            { time: 12, targetWpm: 175 },  // Level 32
+            { time: 12, targetWpm: 180 },  // Level 33
+            { time: 12, targetWpm: 185 },  // Level 34
+            { time: 10, targetWpm: 190 },  // Level 35
+            { time: 10, targetWpm: 195 },  // Level 36
+            { time: 10, targetWpm: 200 },  // Level 37
+            { time: 8, targetWpm: 205 },   // Level 38
+            { time: 8, targetWpm: 210 },   // Level 39
+            { time: 8, targetWpm: 215 },   // Level 40
+            { time: 6, targetWpm: 220 },   // Level 41
+            { time: 6, targetWpm: 225 },   // Level 42
+            { time: 6, targetWpm: 230 },   // Level 43
+            { time: 5, targetWpm: 235 },   // Level 44
+            { time: 5, targetWpm: 240 },   // Level 45
+            { time: 5, targetWpm: 245 },   // Level 46
+            { time: 4, targetWpm: 250 },   // Level 47
+            { time: 4, targetWpm: 255 },   // Level 48
+            { time: 4, targetWpm: 260 },   // Level 49
+            { time: 3, targetWpm: 265 }    // Level 50
+        ];
+
+        // Event Listeners
+        startBtn.addEventListener('click', showLevelScreen);
+        backToWelcomeBtn.addEventListener('click', showWelcomeScreen);
+        userInput.addEventListener('input', handleTyping);
+        restartBtn.addEventListener('click', initGame);
+        submitBtn.addEventListener('click', finishGame);
+        nextLevelBtn.addEventListener('click', loadNextLevel);
+        selectLevelBtn.addEventListener('click', showLevelScreen);
+        retryLevelBtn.addEventListener('click', initGame);
+        certificateBtn.addEventListener('click', claimCertificate);
+
+        // Initialize level buttons
+        function initLevelButtons() {
+            levelContainer.innerHTML = '';
+            for (let i = 1; i <= 50; i++) {
+                const levelBtn = document.createElement('div');
+                levelBtn.className = 'level-btn';
+                levelBtn.textContent = i;
+                
+                if (i === currentLevel) {
+                    levelBtn.classList.add('current');
+                } else if (completedLevels.includes(i)) {
+                    levelBtn.classList.add('completed');
+                } else if (i > currentLevel) {
+                    levelBtn.classList.add('locked');
+                }
+                
+                if (i <= currentLevel) {
+                    levelBtn.addEventListener('click', () => {
+                        currentLevel = i;
+                        showScreen(gameScreen);
+                        initGame();
+                    });
+                }
+                
+                levelContainer.appendChild(levelBtn);
+            }
+        }
+
+        // Game functions
+        function initGame() {
+            showScreen(gameScreen);
+            
+            // Set level-specific configuration
+            const config = levelConfigs[currentLevel - 1];
+            timeLeft = config.time;
+            targetWpm.textContent = config.targetWpm;
+            
+            // Display level number
+            levelNumber.textContent = currentLevel;
+            
+            // Get paragraph for current level
+            originalText = levelParagraphs[currentLevel - 1];
+            paragraphElement.innerHTML = '';
+            
+            // Create span for each character
+            originalText.split('').forEach(char => {
+                const charSpan = document.createElement('span');
+                charSpan.innerText = char;
+                paragraphElement.appendChild(charSpan);
+            });
+            
+            // Reset game state
+            userInput.value = '';
+            typedText = '';
+            errors = 0;
+            timerElement.textContent = timeLeft;
+            wpmElement.textContent = '0';
+            accuracyElement.textContent = '100%';
+            
+            // Focus input
+            userInput.focus();
+            
+            // Clear existing intervals
+            clearInterval(timerInterval);
+            clearInterval(wpmInterval);
+            
+            // Start timer
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Start WPM calculation
+            wpmInterval = setInterval(updateWPM, 1000);
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                finishGame();
+            }
+        }
+
+        function updateWPM() {
+            const elapsedTime = (new Date() - startTime) / 1000 / 60; // in minutes
+            const typedWords = typedText.length / 5;
+            const wpm = Math.round(typedWords / elapsedTime);
+            
+            wpmElement.textContent = isFinite(wpm) ? wpm : 0;
+        }
+
+        function handleTyping() {
+            const inputText = userInput.value;
+            const paragraphChars = paragraphElement.querySelectorAll('span');
+            
+            // Reset all characters
+            paragraphChars.forEach(char => {
+                char.className = '';
+            });
+            
+            // Process typed characters
+            for (let i = 0; i < inputText.length; i++) {
+                if (i >= originalText.length) break;
+                
+                if (inputText[i] === originalText[i]) {
+                    paragraphChars[i].className = 'correct';
+                } else {
+                    paragraphChars[i].className = 'incorrect';
+                    if (i >= typedText.length || typedText[i] !== inputText[i]) {
+                        errors++;
+                    }
+                }
+            }
+            
+            // Highlight current character
+            if (inputText.length < originalText.length) {
+                paragraphChars[inputText.length].className = 'current-char';
+            }
+            
+            typedText = inputText;
+            
+            // Update accuracy
+            const totalTyped = typedText.length;
+            const accuracy = totalTyped > 0 ? Math.round((totalTyped - errors) / totalTyped * 100) : 100;
+            accuracyElement.textContent = accuracy + '%';
+            
+            // Check if text is completed
+            if (typedText === originalText) {
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            clearInterval(timerInterval);
+            clearInterval(wpmInterval);
+            
+            const endTime = new Date();
+            const timeTaken = Math.round((endTime - startTime) / 1000);
+            const totalTime = levelConfigs[currentLevel - 1].time;
+            const timeRemaining = totalTime - timeTaken;
+            
+            const typedWords = typedText.length / 5;
+            const elapsedMinutes = timeTaken / 60;
+            const wpm = Math.round(typedWords / elapsedMinutes);
+            
+            const totalChars = typedText.length;
+            const accuracy = totalChars > 0 ? Math.round((totalChars - errors) / totalChars * 100) : 100;
+            
+            // Update results screen
+            resultLevel.textContent = currentLevel;
+            resultWpm.textContent = isFinite(wpm) ? wpm : 0;
+            resultAccuracy.textContent = accuracy + '%';
+            resultTime.textContent = timeTaken + 's';
+            resultErrors.textContent = errors;
+            resultChars.textContent = totalChars;
+            resultRemaining.textContent = timeRemaining > 0 ? timeRemaining + 's' : '0s';
+            
+            // Update progress
+            const progressPercent = (currentLevel / 50) * 100;
+            levelProgressBar.style.width = progressPercent + '%';
+            currentLevelElement.textContent = currentLevel;
+            
+            // Mark level as completed if not already
+            if (!completedLevels.includes(currentLevel)) {
+                completedLevels.push(currentLevel);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            
+            // Unlock next level if this was the current level
+            if (currentLevel < 50 && !completedLevels.includes(currentLevel + 1)) {
+                currentLevel++;
+                localStorage.setItem('currentLevel', currentLevel);
+            }
+            
+            // Show certificate button if all levels are completed
+            if (completedLevels.length === 50) {
+                certificateBtn.style.display = 'block';
+            }
+            
+            showScreen(resultsScreen);
+            
+            // Add celebration effect for level completion
+            if (accuracy >= 90 && wpm >= levelConfigs[currentLevel - 1].targetWpm) {
+                document.querySelector('h1').classList.add('celebrate');
+                setTimeout(() => {
+                    document.querySelector('h1').classList.remove('celebrate');
+                }, 1500);
+            }
+        }
+
+        function loadNextLevel() {
+            if (currentLevel < 50) {
+                initGame();
+            } else {
+                // User completed all levels
+                alert('Congratulations! You have completed all 50 levels and mastered touch typing!');
+                showLevelScreen();
+            }
+        }
+
+        function claimCertificate() {
+            // Save completion status and redirect to certificate page
+            localStorage.setItem('allLevelsCompleted', 'true');
+            window.location.href = 'certificate.html';
+        }
+
+        function showScreen(screen) {
+            welcomeScreen.classList.remove('active');
+            levelScreen.classList.remove('active');
+            gameScreen.classList.remove('active');
+            resultsScreen.classList.remove('active');
+            
+            screen.classList.add('active');
+            
+            if (screen === levelScreen) {
+                initLevelButtons();
+            }
+        }
+
+        function showWelcomeScreen() {
+            showScreen(welcomeScreen);
+        }
+
+        function showLevelScreen() {
+            showScreen(levelScreen);
+        }
+
+        // Initialize the application
+        currentLevel = parseInt(localStorage.getItem('currentLevel')) || 1;
+        showScreen(welcomeScreen);
+        
+        // Check if certificate button should be shown
+        if (completedLevels.length === 50) {
+            certificateBtn.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
