@@ -52,7 +52,7 @@
     * {margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
     body {background:#f7faff; display:flex; align-items:center; justify-content:center; height:100vh;}
     .login-container {background:#fff; padding:2rem; border-radius:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.08); width:100%; max-width:400px; text-align:center;}
-    .logo {width:80px; height:80px; margin-bottom:1rem; object-fit:contain;}
+    .logo {width:180px; height:180px; margin-bottom:1rem; object-fit:contain;}
     h2 {margin-bottom:1rem; font-weight:600; color:#1e3a8a;}
     .input-group {margin-bottom:1rem; text-align:left;}
     .input-group label {font-size:0.9rem; color:#333; margin-bottom:0.4rem; display:block;}
@@ -69,7 +69,8 @@
 <body>
   <div class="login-container">
     <!-- ✅ Logo -->
-    <img src="C:\Users\ykuma\educational-website\image" alt="Logo" class="logo"/>
+    <img src="image/logo.png" alt="Keyboard Click Logo" class="logo" 
+         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMjAiIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+CjxwYXRoIGQ9Ik02MCA2MEgxMjBWODBINjBWNjBaIiBmaWxsPSIjM2I4MmY2Ii8+CjxwYXRoIGQ9Ik00MCA0MEgxNDBWODBINDBWNDBaIiBmaWxsPSIjM2I4MmY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEgxNjBWMTQwSDIwVjIwWiIgZmlsbD0iIzNiODJmNiIvPgo8dGV4dCB4PSI5MCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMzYjgyZjYiPktleWJvYXJkIENsaWNrPC90ZXh0Pgo8L3N2Zz4K'"/>
 
     <!-- Login Section -->
     <div id="loginSection">
@@ -86,7 +87,7 @@
         <button type="submit" class="btn">Login</button>
       </form>
       <div class="extra-links">
-        <p><a id="showSignUp">Don’t have an account? Sign Up</a></p>
+        <p><a id="showSignUp">Don't have an account? Sign Up</a></p>
       </div>
     </div>
 
@@ -109,6 +110,45 @@
       </div>
     </div>
   </div>
+
+  <!-- ✅ Logo Loading Debug Script -->
+  <script>
+    // Debug logo loading
+    window.addEventListener('load', function() {
+      const logo = document.querySelector('.logo');
+      console.log('Logo source path:', logo.src);
+      
+      logo.onerror = function() {
+        console.error('Logo failed to load from:', this.src);
+        console.log('Trying to load from absolute path...');
+        
+        // Try alternative paths
+        const alternativePaths = [
+          'image/logo.png',
+          './image/logo.png',
+          '/image/logo.png',
+          'logo.png',
+          './logo.png'
+        ];
+        
+        let currentIndex = 0;
+        const tryNextPath = () => {
+          if (currentIndex < alternativePaths.length) {
+            this.src = alternativePaths[currentIndex];
+            console.log('Trying alternative path:', alternativePaths[currentIndex]);
+            currentIndex++;
+          }
+        };
+        
+        this.onerror = tryNextPath;
+        tryNextPath();
+      };
+      
+      logo.onload = function() {
+        console.log('✅ Logo loaded successfully from:', this.src);
+      };
+    });
+  </script>
 
   <!-- ✅ Login / Sign Up Script -->
   <script type="module">
@@ -164,5 +204,3 @@
   </script>
 </body>
 </html>
-
-
