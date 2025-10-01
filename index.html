@@ -68,9 +68,8 @@
 </head>
 <body>
   <div class="login-container">
-    <!-- ✅ Logo -->
-    <img src="image/logo.png" alt="Keyboard Click Logo" class="logo" 
-         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMjAiIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+CjxwYXRoIGQ9Ik02MCA2MEgxMjBWODBINjBWNjBaIiBmaWxsPSIjM2I4MmY2Ii8+CjxwYXRoIGQ9Ik00MCA0MEgxNDBWODBINDBWNDBaIiBmaWxsPSIjM2I4MmY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEgxNjBWMTQwSDIwVjIwWiIgZmlsbD0iIzNiODJmNiIvPgo8dGV4dCB4PSI5MCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMzYjgyZjYiPktleWJvYXJkIENsaWNrPC90ZXh0Pgo8L3N2Zz4K'"/>
+    <!-- ✅ Logo - Try multiple filename variations -->
+    <img src="" alt="Keyboard Click Logo" class="logo" id="logoImage"/>
 
     <!-- Login Section -->
     <div id="loginSection">
@@ -111,43 +110,57 @@
     </div>
   </div>
 
-  <!-- ✅ Logo Loading Debug Script -->
+  <!-- ✅ Logo Loading Script -->
   <script>
-    // Debug logo loading
-    window.addEventListener('load', function() {
-      const logo = document.querySelector('.logo');
-      console.log('Logo source path:', logo.src);
-      
-      logo.onerror = function() {
-        console.error('Logo failed to load from:', this.src);
-        console.log('Trying to load from absolute path...');
-        
-        // Try alternative paths
-        const alternativePaths = [
-          'image/logo.png',
-          './image/logo.png',
-          '/image/logo.png',
-          'logo.png',
-          './logo.png'
-        ];
-        
-        let currentIndex = 0;
-        const tryNextPath = () => {
-          if (currentIndex < alternativePaths.length) {
-            this.src = alternativePaths[currentIndex];
-            console.log('Trying alternative path:', alternativePaths[currentIndex]);
-            currentIndex++;
-          }
-        };
-        
-        this.onerror = tryNextPath;
-        tryNextPath();
-      };
-      
-      logo.onload = function() {
-        console.log('✅ Logo loaded successfully from:', this.src);
-      };
-    });
+    // Try multiple possible logo filenames
+    const possibleLogos = [
+      'image/logo.png',
+      'image/logo.PNG',
+      'image/Logo.png',
+      'image/Logo.PNG',
+      'image/LOGO.png',
+      'image/LOGO.PNG',
+      'image/keyboard click logo.png',
+      'image/keyboard-click-logo.png',
+      'image/keyboard_click_logo.png',
+      'image/typing logo.png',
+      'image/typing-logo.png',
+      'image/typing_logo.png',
+      'image/app logo.png',
+      'image/app-logo.png',
+      'image/app_logo.png',
+      'image/og2277 logo.png',
+      'image/og2277-logo.png',
+      'image/og2277_logo.png',
+      'logo.png',
+      'Logo.png',
+      'LOGO.png'
+    ];
+
+    const logoImage = document.getElementById('logoImage');
+    let currentLogoIndex = 0;
+
+    function tryNextLogo() {
+      if (currentLogoIndex < possibleLogos.length) {
+        const logoPath = possibleLogos[currentLogoIndex];
+        console.log('Trying logo path:', logoPath);
+        logoImage.src = logoPath;
+        currentLogoIndex++;
+      } else {
+        // All paths failed, use fallback
+        console.log('All logo paths failed, using fallback');
+        logoImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4xIiByeD0iMTUiLz48cGF0aCBkPSJNNjAgNjBIMTIwVjgwSDYwVjYwWiIgZmlsbD0iIzNiODJmNiIvPjxwYXRoIGQ9Ik00MCA0MEgxNDBWODBINDBWNDBaIiBmaWxsPSIjM2I4MmY2Ii8+PHBhdGggZD0iTTIwIDIwSDE2MFYxNDBIMjBWMjBaIiBmaWxsPSIjM2I4MmY2Ii8+PHRleHQgeD0iOTAiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjM2I4MmY2Ij5LZXlib2FyZCBDbGljazwvdGV4dD48L3N2Zz4=';
+        logoImage.alt = 'Keyboard Click Logo - Image not found';
+      }
+    }
+
+    logoImage.onerror = tryNextLogo;
+    logoImage.onload = function() {
+      console.log('✅ Logo loaded successfully from:', this.src);
+    };
+
+    // Start trying logos
+    tryNextLogo();
   </script>
 
   <!-- ✅ Login / Sign Up Script -->
