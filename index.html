@@ -16,6 +16,9 @@
   <!-- ✅ Author -->
   <meta name="author" content="Team OG2277">
 
+  <!-- ✅ Favicon -->
+  <link rel="icon" href="image/logo.png" type="image/png">
+
   <!-- ✅ Open Graph (Social Media Preview) -->
   <meta property="og:title" content="Keyboard Click - Typing Practice Game">
   <meta property="og:description" content="Play and improve your typing speed with Keyboard Click. 100+ levels to help you master typing fast.">
@@ -23,19 +26,36 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://teamog2277-hue.github.io/keyboard-click/image/logo.png">
 
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Keyboard Click - Typing Practice Game">
+  <meta name="twitter:description" content="Play and improve your typing speed with Keyboard Click. 100+ levels to help you master typing fast.">
+  <meta name="twitter:image" content="https://teamog2277-hue.github.io/keyboard-click/image/logo.png">
+
+  <!-- ✅ Structured Data (Logo, Name, Description) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Keyboard Click",
+    "url": "https://teamog2277-hue.github.io/keyboard-click/",
+    "logo": "https://teamog2277-hue.github.io/keyboard-click/image/logo.png",
+    "description": "Keyboard Click is a free typing practice game with 100+ levels. Improve your typing speed, accuracy, and track your progress."
+  }
+  </script>
+
   <!-- ✅ Google Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
 
-
-  <!-- ✅ Your Styles -->
+  <!-- ✅ Styles -->
   <style>
     * {margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
     body {background:#f7faff; display:flex; align-items:center; justify-content:center; height:100vh;}
     .login-container {background:#fff; padding:2rem; border-radius:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.08); width:100%; max-width:400px; text-align:center;}
-    .logo {width: 120px;height:120px;margin-bottom:1rem;object-fit:contain;}
-    h2 {margin-bottom:1rem; font-weight:600;color:#1e3a8a;}
+    .logo {width:180px; height:180px; margin-bottom:1rem; object-fit:contain;}
+    h2 {margin-bottom:1rem; font-weight:600; color:#1e3a8a;}
     .input-group {margin-bottom:1rem; text-align:left;}
-    .input-group label {font-size:0.9rem; color:#333;margin-bottom:0.4rem;display:block;}
+    .input-group label {font-size:0.9rem; color:#333; margin-bottom:0.4rem; display:block;}
     .input-group input {width:100%; padding:0.7rem; border:1px solid #cbd5e1; border-radius:0.5rem; font-size:1rem; transition:border 0.2s;}
     .input-group input:focus {border-color:#3b82f6; outline:none;}
     .btn {background:#3b82f6; color:white; border:none; padding:0.75rem; width:100%; border-radius:0.5rem; font-size:1rem; cursor:pointer; margin-top:0.5rem; transition:0.2s;}
@@ -48,8 +68,9 @@
 </head>
 <body>
   <div class="login-container">
-    <img src="C:\Users\ykuma\educational-website\image" alt="Logo" class="logo">
-    
+    <!-- ✅ Logo -->
+    <img src="image/logo.png" alt="Logo" class="logo"/>
+
     <!-- Login Section -->
     <div id="loginSection">
       <h2>Welcome Back</h2>
@@ -89,7 +110,7 @@
     </div>
   </div>
 
-  <!-- Login / Sign Up Script -->
+  <!-- ✅ Login / Sign Up Script -->
   <script type="module">
     import { auth } from './firebase.js';
     import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
@@ -143,9 +164,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
